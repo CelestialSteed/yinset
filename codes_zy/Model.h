@@ -152,6 +152,28 @@ void Model::fixLongEdge(Integer i)
 
 void Model::fixShortEdge(Integer i)
 {
+    Integer v1 = edge(i)(0), v2 = edge(i)(1);
+
+    //build new vertex v0
+    Real newcoor[3];
+    newcoor[0] = (vertex(v1)(0) + vertex(v2)(0)) / 2;
+    newcoor[1] = (vertex(v1)(1) + vertex(v2)(1)) / 2;
+    newcoor[2] = (vertex(v1)(2) + vertex(v2)(2)) / 2;
+    Vertex newvert(newcoor[0],newcoor[1],newcoor[2]);
+    vertex.insert(newvert);
+    Integer v0 = vertex.find(newvert);      //v0是新点的序号
+
+    std::cout << "fixShortEdge" << std::endl;
+    std::cout << "v1 = " << v1 << ", v2 = " << v2 << ", v0 = " << v0 << std::endl;
+    std::cout << "v1 = " << vertex(v1)(0) << "\t" << vertex(v1)(1) << "\t" << vertex(v1)(2) << std::endl;
+    std::cout << "v2 = " << vertex(v2)(0) << "\t" << vertex(v2)(1) << "\t" << vertex(v2)(2) << std::endl;
+    std::cout << "v0 = " << vertex(v0)(0) << "\t" << vertex(v0)(1) << "\t" << vertex(v0)(2) << std::endl;
+
+    //下一步的安排
+    //找三角形
+    //找对边
+    //delete vertex
+    //建立新的点和边
 
 }
 

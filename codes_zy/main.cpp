@@ -7,7 +7,7 @@ int main()
     Model model({1.5,3});
     model.loadObjFile("dataset/" + filename);
     // model.deleteVertex(0);
-    const Integer n = 10;
+    const Integer n = 10;   //fixEdge里n是最大次数吗？
     model.test(n);
     model.saveObjFile("output/" + filename);
 
