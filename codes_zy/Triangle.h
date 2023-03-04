@@ -205,8 +205,8 @@ std::vector<Integer> TriangleList::find(const Edge &e) const
     for (Integer i = 0; i < (Integer)triangle.size(); i++)
     {
         ///**
-        std::cout << "triange " << i << ", f " << triangle[i](0) << " " << triangle[i](1) << " " << triangle[i](2) << std::endl;
-        std::cout << "edge " << e(0) << " " << e(1) << std::endl;
+        //std::cout << "triange " << i << ", f " << triangle[i](0) << " " << triangle[i](1) << " " << triangle[i](2) << std::endl;
+        //std::cout << "edge " << e(0) << " " << e(1) << std::endl;
         if (triangle[i](0) == e(0) && triangle[i](1) == e(1))
         {
             res.push_back(i);
