@@ -54,6 +54,8 @@ void Model::fixEdge(const Integer &n)
     {
         fixAnEdge();
     }
+
+    if (cnt <= n) std::cout << "fixed : cnt = "  << cnt << std::endl;
 }
 
 void Model::fixAnEdge()
@@ -103,20 +105,20 @@ void Model::fixLongEdge(Integer i)
     std::vector<Integer> exTris = triangle.find(edge(i));
     if (exTris.size() > 2)
     {
-        std::cout << "警告：一边连接了两个面。" <<std::endl;
+        std::cout << "警告：一边连接了超过两个面。" <<std::endl;
     }
     std::cout << "exTris.size() = " << exTris.size() << std::endl;
     std::cout << "开始找v3v4" << std::endl;
     //找面的顶点
-    std::vector<Integer> exvert;
-    for (Integer k = 0; k < exTris.size(); k++)
+    std::vector<Integer> exVert;
+    for (Integer k = 0; k < (Integer)exTris.size(); k++)
     {
         for (Integer j = 0; j < 3; j++)
         {
             Integer idx = triangle(exTris[k])(j);
             if (idx != v1 && idx != v2)
             {
-                exvert.push_back(idx);
+                exVert.push_back(idx);
                 break;
             }
         }
@@ -130,18 +132,18 @@ void Model::fixLongEdge(Integer i)
     Edge e1(v0,v1), e2(v0,v2);
     edge.insert(e1);
     edge.insert(e2);
-    for (Integer j = 0; j < exvert.size(); j++)
+    for (Integer j = 0; j < (Integer)exVert.size(); j++)
     {
-        Edge newedge(v0,exvert[j]);
+        Edge newedge(v0,exVert[j]);
         edge.insert(newedge);
     }
     std::cout << "build face" << std::endl;
-    std::cout << "exvert.size() = " << exvert.size() << std::endl;
+    std::cout << "exVert.size() = " << exVert.size() << std::endl;
     //new triangle
-    for (Integer j = 0; j < exvert.size(); j++)
+    for (Integer j = 0; j < (Integer)exVert.size(); j++)
     {
-        Triangle newtri1(exvert[j],v1,v0);
-        Triangle newtri2(exvert[j],v2,v0);
+        Triangle newtri1(exVert[j],v1,v0);
+        Triangle newtri2(exVert[j],v2,v0);
         triangle.insert(newtri1);
         triangle.insert(newtri2);
         std::cout << "tri.size = "  << triangle.size() << std::endl;
@@ -160,20 +162,109 @@ void Model::fixShortEdge(Integer i)
     newcoor[1] = (vertex(v1)(1) + vertex(v2)(1)) / 2;
     newcoor[2] = (vertex(v1)(2) + vertex(v2)(2)) / 2;
     Vertex newvert(newcoor[0],newcoor[1],newcoor[2]);
-    vertex.insert(newvert);
-    Integer v0 = vertex.find(newvert);      //v0是新点的序号
 
-    std::cout << "fixShortEdge" << std::endl;
-    std::cout << "v1 = " << v1 << ", v2 = " << v2 << ", v0 = " << v0 << std::endl;
+    std::cout << "fixShortEdge " << i << std::endl;
+    std::cout << "v1 = " << v1 << ", v2 = " << v2 <<  std::endl;
     std::cout << "v1 = " << vertex(v1)(0) << "\t" << vertex(v1)(1) << "\t" << vertex(v1)(2) << std::endl;
     std::cout << "v2 = " << vertex(v2)(0) << "\t" << vertex(v2)(1) << "\t" << vertex(v2)(2) << std::endl;
-    std::cout << "v0 = " << vertex(v0)(0) << "\t" << vertex(v0)(1) << "\t" << vertex(v0)(2) << std::endl;
 
     //下一步的安排
     //找三角形
+    std::vector<Integer> exTris = triangle.find(edge(i));
+    if (exTris.size() > 2)
+    {
+        std::cout << "警告：一边连接了超过两个面。" <<std::endl;
+    }
+    std::cout << "exTris.size() = " << exTris.size() << std::endl;
+    std::cout << "开始找v3v4" << std::endl;
+    //找面的顶点
+    std::vector<Integer> exVert;
+    for (Integer k = 0; k < (Integer)exTris.size(); k++)
+    {
+        for (Integer j = 0; j < 3; j++)
+        {
+            Integer idx = triangle(exTris[k])(j);
+            if (idx != v1 && idx != v2)
+            {
+                exVert.push_back(idx);
+                break;
+            }
+        }
+    }
+    //其他三角形
+    std::cout << "其他三角形:" << std::endl;
+    std::vector<Integer> adTris = triangle.find(v1);
+    std::vector<Integer> adTris2 = triangle.find(v2);
+    adTris.insert(adTris.end(),adTris2.begin(),adTris2.end());
+
+    for (Integer k = 0; k < (Integer)exTris.size(); k++)
+    {
+        adTris.erase(remove(adTris.begin(),adTris.end(),exTris[k]),adTris.end());
+    }
+    for (int k = 0; k < adTris.size(); k++)
+    {
+        std::cout << "triangle " << adTris[k] << ":f " << triangle(adTris[k])(0) << " " << triangle(adTris[k])(1) << " " << triangle(adTris[k])(2) << std::endl;
+    }
     //找对边
-    //delete vertex
+    std::cout << "开始找对边" << std::endl;
+    std::vector<Integer> opEdges;
+    for (Integer k = 0; k < (Integer)adTris.size(); k++)
+    {
+        std::vector<Integer> opVert;
+        for (Integer j = 0; j < 3; j++)
+        {
+            Integer idx = triangle(adTris[k])(j);
+            if (idx != v1 && idx != v2)
+            {
+                opVert.push_back(idx);
+            }
+        }
+        Edge opEdge(opVert[0],opVert[1]);
+        opEdges.push_back(edge.find(opEdge));        
+    }
+    //find vertex
+    std::cout << "开始找对面的点" << std::endl;
+    std::vector<Integer> opVerts;
+    for (Integer k = 0; k < (Integer)adTris.size(); k++)
+    {
+        for (Integer j = 0; j < 3; j++)
+        {
+            Integer idx = triangle(adTris[k])(j);
+            if (idx != v1 && idx != v2)
+            {
+                opVerts.push_back(idx);
+                break;
+            }
+        }    
+    }    
+    std::vector<Integer>::iterator iter = unique(opVerts.begin(), opVerts.end());//遍历查找重复项
+	opVerts.erase(iter, opVerts.end());//删除重复项
+
     //建立新的点和边
+    vertex.insert(newvert);
+    Integer v0 = vertex.find(newvert);      //v0是新点的序号
+    std::cout << "v0 = " << vertex(v0)(0) << " " << vertex(v0)(1) << " " << vertex(v0)(2) << std::endl;
+
+    for (Integer k = 0; k < (Integer)opVerts.size(); k++)
+    {
+        Edge e(opVerts[k],v0);
+        edge.insert(e);
+    }
+    std::cout << "edge finish" << std::endl;
+    for (Integer k = 0; k < (Integer)opEdges.size(); k++)
+    {
+        Triangle tri(edge(opEdges[k])(0),edge(opEdges[k])(1),v0);
+        triangle.insert(tri);        
+    }
+    std::cout << "tris finish" << std::endl;
+
+    //delete vertex
+    std::cout << "delete v1" << std::endl;
+    deleteVertex(v1);
+    std::cout << "delete v2" << std::endl;
+    if (v2 > v1) v2--;
+    deleteVertex(v2);
+    std::cout << "delete finish" << std::endl;
 
 }
 
@@ -194,7 +285,7 @@ bool Model::isFit()
 
 void Model::test(const Integer &n)
 {
-    fixAnEdge();
+    fixEdge(n);
 }
 
 std::vector<std::vector<Integer>> Model::findHoles() const

@@ -27,3 +27,10 @@ deleteEdge
 短边将端点合并至中点，或形成孔洞
 ### 前提条件
 一条边最多在两个面内
+
+## 关于Eigen的安装和使用
+下载地址（3.3.8版本）： https://gitlab.com/libeigen/eigen/-/archive/3.3.8/eigen-3.3.8.zip 
+下载后解压，mkdir build , cmake .. , make install, sudo cp -r /usr/local/include/eigen3 /usr/include, 
+包含路径，task.json中加"-I'/usr/include/eigen3'"
+
+这里我用的是eigen3/Eigen，原code用的是Eigen

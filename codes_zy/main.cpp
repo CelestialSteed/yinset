@@ -4,7 +4,7 @@
 int main()
 {
     std::string filename = "polyhedron.obj";
-    Model model({1.5,3});
+    Model model({0.5,3.7});
     model.loadObjFile("dataset/" + filename);
     // model.deleteVertex(0);
     const Integer n = 10;   //fixEdge里n是最大次数吗？

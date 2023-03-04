@@ -55,6 +55,53 @@ std::ostream &operator<<(std::ostream &out, const Triangle &f)
     return out;
 }
 
+void Intsort(Integer &x, Integer &y, Integer &z)
+{
+    Integer min,mid,max;
+    if (x < y)
+    {
+        if (x < z)
+        {
+            min = x;
+            if (y < z)
+            {
+                mid = y;
+                max = z;
+            }else
+            {
+                mid = z;
+                max = y;
+            }
+        }else
+        {
+            min = z;
+            mid = x;
+            max = y;
+        }
+    }else
+    {
+        if (y < z)
+        {
+            min = y;
+            if (x < z)
+            {
+                mid = x;
+                max = z;
+            }else
+            {
+                mid = z;
+                max = x;
+            }
+        }else
+        {
+            min = z;
+            mid = y;
+            max = x;
+        }
+    }
+    x = min; y = mid; z = max;
+}
+
 Triangle::Triangle(const Integer &x, const Integer &y, const Integer &z)
 {
     if (x == y || y == z || z == x)
@@ -64,7 +111,8 @@ Triangle::Triangle(const Integer &x, const Integer &y, const Integer &z)
     this->vertex[0] = x;
     this->vertex[1] = y;
     this->vertex[2] = z;
-    std::sort(&vertex[0], &vertex[2]);
+    //***
+    Intsort(vertex[0], vertex[1], vertex[2]);
 }
 
 Integer Triangle::operator()(const Integer &index) const
@@ -156,6 +204,9 @@ std::vector<Integer> TriangleList::find(const Edge &e) const
     std::vector<Integer> res;
     for (Integer i = 0; i < (Integer)triangle.size(); i++)
     {
+        ///**
+        std::cout << "triange " << i << ", f " << triangle[i](0) << " " << triangle[i](1) << " " << triangle[i](2) << std::endl;
+        std::cout << "edge " << e(0) << " " << e(1) << std::endl;
         if (triangle[i](0) == e(0) && triangle[i](1) == e(1))
         {
             res.push_back(i);
